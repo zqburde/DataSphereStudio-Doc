@@ -1,5 +1,18 @@
 # DataSphere Studio & Linkis 单机一键部署文档
 
+### 零、部署前注意事项（重要！！！）
+- 确保安装的系统为CentOS为6或者7
+
+- 服务器存在多网卡问题。首先通过命令`ifconfig`命令查看服务器激活状态的网卡，若激活状态的网卡数大于1，那么用户就需要通过命令`ifconfig [NIC_NAME] down`(`[NIC_NAME]`为网卡名称)来关闭多余的网卡，以确保激活的网卡数只有1个
+
+- 网卡多IP问题。在确保服务器只存在一个网卡是激活状态的情况下，通过命令`echo $(hostname -I)`查看网卡对应的IP数，若大于1，那么就需要去掉网卡中指定的IP，采用动态获取IP的方式，具体命令如下：
+    ```shell
+      ip addr flush dev [NIC_NAME]
+      ifdown [NIC_NAME]
+      ifup [NIC_NAME]
+    ```
+
+- hostname配置。在安装前用户需要配置hostname到ip的映射
 
 ### 一、基础软件安装
 
@@ -66,7 +79,7 @@
 
 ### 三、准备安装包
 
-- 用户可以自行编译或者去 release 页面下载安装包：[DSS Release-1.1.0](https://github.com/WeBankFinTech/DataSphereStudio/releases/tag/1.1.0)
+- 用户可以自行编译或者去 release 页面下载安装包：[DSS Release-1.1.1](https://github.com/WeBankFinTech/DataSphereStudio/releases/tag/1.1.1)
 
   **请注意：为了能正常使用 Visualis1.0.0 和 Exchangis1.0.0，请去 releases 页面下载最新的一键安装部署包。**
 
@@ -91,8 +104,8 @@
 - 如果用户选择自行编译 Linkis 或 DSS，请确保编译的是 Linkis1.1.1 和已拉取了 DSS `master` 分支的最新代码，编译方式可以参考:  
   [DSS后端编译文档](../开发文档/DSS编译文档.md)  
   [DSS前端编译文档](../开发文档/前端编译文档.md)  
-  [Linkis后端编译文档](https://linkis.apache.org/zh-CN/docs/latest/development/linkis_compile_and_package)  
-  [Linkis前端编译文档](https://linkis.apache.org/zh-CN/docs/latest/development/web_build)
+  [Linkis后端编译文档](https://linkis.apache.org/zh-CN/docs/1.1.1/development/linkis-compile-and-package/)  
+  [Linkis前端编译文档](https://linkis.apache.org/zh-CN/docs/1.1.1/development/web-build)
 
 
         1. 针对后端安装包可直接将上面的 Linkis 后端安装包或 DSS 后端安装包替换成编译后相关安装包即可。
@@ -123,43 +136,43 @@
 ```properties
 #################### 一键安装部署的基本配置 ####################
 
-### deploy user（部署用户，默认为当前登录用户，非必须不建议修改）
+### deploy user（部署用户，默认为当前登录用户）
 deployUser=hadoop
 
-### Linkis_VERSION（非必须不建议修改）
+### Linkis_VERSION
 LINKIS_VERSION=1.1.1
 
 ### DSS Web（本机安装一般无需修改，但需确认此端口是否占用，若被占用，修改一个可用端口即可）
 DSS_NGINX_IP=127.0.0.1
 DSS_WEB_PORT=8085
 
-### DSS VERSION（非必须不建议修改）
-DSS_VERSION=1.1.0
+### DSS VERSION
+DSS_VERSION=1.1.1
 
 
 ############## linkis的其他默认配置信息 start ############## 
 ### Specifies the user workspace, which is used to store the user's script files and log files.
 ### Generally local directory
-##file:// required（非必须不建议修改）
+##file:// required. 指定用户使用的目录路径，一般用于存储用户的脚本文件和日志文件等，是用户的工作空间
 WORKSPACE_USER_ROOT_PATH=file:///tmp/linkis/ 
 ### User's root hdfs path
-##hdfs:// required（非必须不建议修改）
+##hdfs:// required. 结果集日志等文件路径，用于存储Job的结果集文件
 HDFS_USER_ROOT_PATH=hdfs:///tmp/linkis 
 ### Path to store job ResultSet:file or hdfs path
-##hdfs:// required（非必须不建议修改）
+##hdfs:// required. 结果集日志等文件路径，用于存储Job的结果集文件，如果未配置 使用HDFS_USER_ROOT_PATH的配置
 RESULT_SET_ROOT_PATH=hdfs:///tmp/linkis 
 
-### Path to store started engines and engine logs, must be local（非必须不建议修改）
+### Path to store started engines and engine logs, must be local. 存放执行引擎的工作路径，需要部署用户有写权限的本地目录
 ENGINECONN_ROOT_PATH=/appcom/tmp
 
-
-###HADOOP CONF DIR #/appcom/config/hadoop-config（非必须不建议修改）
+### 基础组件环境信息
+###HADOOP CONF DIR #/appcom/config/hadoop-config（用户根据实际情况修改）
 HADOOP_CONF_DIR=/appcom/config/hadoop-config
-###HIVE CONF DIR  #/appcom/config/hive-config（非必须不建议修改）
+###HIVE CONF DIR  #/appcom/config/hive-config（用户根据实际情况修改）
 HIVE_CONF_DIR=/appcom/config/hive-config
-###SPARK CONF DIR #/appcom/config/spark-config（非必须不建议修改）
+###SPARK CONF DIR #/appcom/config/spark-config（用户根据实际情况修改）
 SPARK_CONF_DIR=/appcom/config/spark-config
-###for install （非必须不建议修改）
+###for install （用户根据实际情况修改）
 LINKIS_PUBLIC_MODULE=lib/linkis-commons/public-module
 
 ##YARN REST URL spark engine required（根据实际情况修改IP和端口）
@@ -385,7 +398,7 @@ HIVE_PASSWORD=xxx
 - 若用户需要停止所有服务可执行该命令`sh stop-all.sh`，重新启动所有服务就执行`sh start-all.sh`，这两条命令均在xx/dss_linkis/bin目录下执行
 
 ### 六、补充说明
-- 考虑到安装包过于大的问题，Linkis默认仅提供Hive, Python, Shell, Spark引擎插件，用户若想使用其他引擎，可参考文档: [Linkis引擎的安装](https://linkis.apache.org/zh-CN/docs/latest/deployment/engine_conn_plugin_installation/)
+- 考虑到安装包过于大的问题，Linkis默认仅提供Hive, Python, Shell, Spark引擎插件，用户若想使用其他引擎，可参考文档: [Linkis引擎的安装](https://linkis.apache.org/zh-CN/docs/1.1.1/deployment/engine-conn-plugin-installation)
 - DSS默认未安装调度系统，用户可以选择安装 Schedulis 或者 DolphinScheduler，具体安装方式见下面表格
 - DSS默认仅安装DateChecker, EventSender, EventReceiver AppConn，用户可参考文档安装其他AppConn，如Visualis, Exchangis, Qualitis, Prophecis, Streamis。调度系统可使用Schedulis或DolphinScheduler
 

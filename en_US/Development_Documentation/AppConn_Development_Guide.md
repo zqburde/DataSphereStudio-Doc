@@ -156,7 +156,7 @@ Please note: Whether it is a Spring Web application or a non-Spring Web applicat
 According to different scenarios, DSS provides the following three ``UserInterceptor``` sub-interfaces:
 
 - ``DSSInternalUserInterceptor``: If the third-party application is a DSS internal application, implement this interface;
-- ``HttpRequestUserInterceptor````: If the user login information (such as: User object) of the third-party application is stored in cookies, you need to implement this interface. The main purpose of this interface is to hope that the third-party system will write the user Go to ``HttpServletRequest```` and return, so that the latter Filter can detect the user in the cookie and release it directly. You can refer to the implementation of Schedulis: https://github.com/WeBankFinTech/Schedulis/blob/branch -0.6.1/azkaban-web-server/src/main/java/azkaban/webapp/servlet/WTSSHttpRequestUserInterceptor.java
+- ``HttpRequestUserInterceptor````: If the user login information (such as: User object) of the third-party application is stored in cookies, you need to implement this interface. The main purpose of this interface is to hope that the third-party system will write the user Go to ``HttpServletRequest```` and return, so that the latter Filter can detect the user in the cookie and release it directly. You can refer to the implementation of Schedulis: https://github.com/WeBankFinTech/Schedulis/blob/branch-0.6.1/azkaban-web-server/src/main/java/azkaban/webapp/servlet/WTSSHttpRequestUserInterceptor.java
 - ``HttpSessionUserInterceptor``: If the user login information of the third-party application (such as: User object) is stored in the HttpSession, you need to implement this interface. The main purpose of this interface is to hope that the third-party system will write the user to ``HttpSession``, so that the following Filter can detect the user in the cookie and let it go directly;
 
 Please note: **If it is a Spring Web application, you need to mark the implemented ```UserInterceptor``` with ```@Component```, so that ```SpringOriginSSOPluginFilter``` can be loaded into the ``` UserInterceptor```. **
@@ -260,7 +260,7 @@ The ```ProjectResponseRef``` is relatively simple, only requires the user to ret
 
 Among them, only ```ProjectCreationOperation``` and ```ProjectSearchOperation``` require a ```ProjectResponseRef``` containing a ```refProjectId```, while ```ProjectUpdateOperation``` and ` ``ProjectDeletionOperation``` is only required to return a ```ResponseRef```, which simply tells the DSS framework whether the delete and update operations were successful.
 
-You can also refer to the implementation of VisualisAppConn: [Please click me to view](https://github.com/WeDataSphere/DataSphereStudio/tree/dev-1.1.0/dss-appconn/appconns/dss-visualis-appconn/src/main/java/com/webank/wedatasphere/dss/appconn/visualis/project)
+You can also refer to the implementation of VisualisAppConn: [Please click me to view](https://github.com/WeBankFinTech/Visualis/tree/master/visualis-appconn/src/main/java/com/webank/wedatasphere/dss/appconn/visualis/project)
 
 ### 2.3 OnlyDevelopmentAppConn - access to DSS development process specification
 
