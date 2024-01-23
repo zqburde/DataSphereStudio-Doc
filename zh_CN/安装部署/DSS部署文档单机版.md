@@ -26,7 +26,8 @@
 
   MySQL (5.5+); JDK (1.8.0_141以上); Nginx
 
-- **Tips: 请确保已安装Linkis**
+- Tips:
+  *请确保已安装Links*
   
 ### 二、创建用户
 
@@ -182,24 +183,6 @@ EMAIL_PROTOCOL=smtp
 ORCHESTRATOR_FILE_PATH=/appcom/tmp/dss
 ### Save DSS flow execution service log path
 EXECUTION_LOG_PATH=/appcom/tmp/dss
-```
-
-- 修改数据库配置。请确保配置的数据库，安装机器可以正常访问，否则将会出现 DDL 和 DML 导入失败的错误，打开 `db.sh`，按需修改相关配置参数，参数说明如下：
-
-```properties
-### 配置DSS数据库
-MYSQL_HOST=127.0.0.1
-MYSQL_PORT=3306
-MYSQL_DB=dss
-MYSQL_USER=xxx
-MYSQL_PASSWORD=xxx
-
-## Hive metastore的数据库配置，用于Linkis访问Hive的元数据信息
-HIVE_HOST=127.0.0.1
-HIVE_PORT=3306
-HIVE_DB=xxx
-HIVE_USER=xxx
-HIVE_PASSWORD=xxx
 ```
 
 ### 五、安装和使用
